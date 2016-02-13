@@ -337,7 +337,8 @@ angular.module('dndLists', [])
                     // Invoke the callback, which can transform the transferredObject and even abort the drop.
                     var index = getPlaceholderIndex();
 
-                    var  onTransferDataReadyCallback = function(transferredArray){
+                    var  onTransferDataReadyCallback = function(transferredArray, adaptedIndex){
+                        var newIndex = adaptedIndex || index;
                         if (!transferredArray) {
                             return stopDragover();
                         }
@@ -345,11 +346,11 @@ angular.module('dndLists', [])
                         // Retrieve the JSON array and insert the transferred object into it.
                         var targetArray = scope.$eval(attr.dndList);
                         scope.$apply(function() {
-                            var args = [index, 0].concat(transferredArray);
+                            var args = [newIndex, 0].concat(transferredArray);
                             Array.prototype.splice.apply(targetArray, args);
                             //targetArray.splice(index, 0, transferredArray);
                         });
-                        invokeCallback(attr.dndInserted, event, index, transferredArray);
+                        invokeCallback(attr.dndInserted, event, newIndex, transferredArray);
 
                         // In Chrome on Windows the dropEffect will always be none...
                         // We have to determine the actual effect manually from the allowed effects
